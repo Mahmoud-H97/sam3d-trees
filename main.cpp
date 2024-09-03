@@ -2,29 +2,29 @@
 #include <iostream>
 #include <vector>
 #include "rot_mat.hpp"
+#include "apply_rot.hpp"
 
 
-//print the matrix (for testing)
-void printMatrix(const Matrix3x3& matrix){
-	for (const auto& row : matrix) {
-		for (const auto& elem : row) {
-			std::cout << elem << " ";
-		}
-		std::cout << std::endl;
-	}
-}
 
 int main() {
+
+	double resolution = 0.05;
+
+	Point3D camera_pos = {0, 0, 80};
+
+
+
+
 	double theta = M_PI / 4; //example angle 45 degrees
 	
 	std:: cout << "Rx(theta):" << std::endl;
-	printMatrix(Rx(theta));
+	printMatrix(Rmx(theta));
 
 	std:: cout << "Ry(theta):" << std::endl;
-	printMatrix(Ry(theta));
+	printMatrix(Rmy(theta));
 
 	std:: cout << "Rz(theta):" << std::endl;
-	printMatrix(Rz(theta));
+	printMatrix(Rmz(theta));
 
 	return 0;
         
@@ -35,6 +35,8 @@ int main() {
 
         std::vector<Point3D> points;
 	Point3D tempPt;
+
+
 
 	//Reading points from ASCII formated file
 	FILE* inFile = fopen("filename.xyz", "r");
