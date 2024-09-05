@@ -1,4 +1,5 @@
-#include "las2xyz.hpp"
+
+#include "las2rgb.hpp"
 #include <iostream>
 #include <ostream>
 #include <pdal/PointView.hpp>
@@ -7,14 +8,11 @@
 #include <fstream>
 #include <string>
 
-bool las2xyz(const std::string &input_filename){
+bool las2rgb(const std::string &input_filename){
 	pdal::StageFactory factory;
-        
-
 
 	//the reader stage 
 	pdal::Stage* reader = factory.createStage("readers.las");
-	//pdal::Stage* reader = factory.createStage("readers.nitf");
 	if (!reader) {
 		std::cerr << "Failed to create LAS reader." << std::endl;
 		return false;
@@ -31,7 +29,7 @@ bool las2xyz(const std::string &input_filename){
 	pdal::PointViewSet pointViewSet = reader->execute(table);
 
 	//open the output xyz file
-	std::string output_filename = "tmp.xyz";
+	std::string output_filename = "tmp.rgb";
 	std::ofstream outfile(output_filename);
 	if (!outfile.is_open()) {
 		std::cerr << "Failed to open output folder" << output_filename << std::endl;
@@ -42,11 +40,11 @@ bool las2xyz(const std::string &input_filename){
 	//
 	for (auto& pointView : pointViewSet) {
 		for (pdal::PointId i = 0; i < pointView->size(); ++i) {
-			double x = pointView->getFieldAs<double>(pdal::Dimension::Id::X, i);
-			double y = pointView->getFieldAs<double>(pdal::Dimension::Id::Y, i);
-			double z = pointView->getFieldAs<double>(pdal::Dimension::Id::Z, i);
+			double r = pointView->getFieldAs<double>(pdal::Dimension::Id::Red, i);
+			double g = pointView->getFieldAs<double>(pdal::Dimension::Id::Green, i);
+			double b = pointView->getFieldAs<double>(pdal::Dimension::Id::Blue, i);
 
-			outfile << x << "" << y << "" << z << std::endl;
+			outfile << r << "" << g << "" << b << std::endl;
 		}
 	}
 

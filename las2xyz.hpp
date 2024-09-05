@@ -3,6 +3,6 @@
 
 #include <string>
 
-bool las2xyz(const std::string& input_filename, const std::string& output_filename);
+bool las2xyz(const std::string& input_filename);
 
 #endif
