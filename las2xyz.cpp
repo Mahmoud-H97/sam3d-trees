@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 
-bool las2xyz(const std::string &input_filename){
+void las2xyz(const std::string &input_filename){
 	pdal::StageFactory factory;
         
 
@@ -17,7 +17,7 @@ bool las2xyz(const std::string &input_filename){
 	//pdal::Stage* reader = factory.createStage("readers.nitf");
 	if (!reader) {
 		std::cerr << "Failed to create LAS reader." << std::endl;
-		return false;
+		return;
 	}
 
 	//the inputfile
@@ -35,7 +35,7 @@ bool las2xyz(const std::string &input_filename){
 	std::ofstream outfile(output_filename);
 	if (!outfile.is_open()) {
 		std::cerr << "Failed to open output folder" << output_filename << std::endl;
-		return false;
+		return;
 	}
 
 	//loop over points & write
@@ -46,12 +46,11 @@ bool las2xyz(const std::string &input_filename){
 			double y = pointView->getFieldAs<double>(pdal::Dimension::Id::Y, i);
 			double z = pointView->getFieldAs<double>(pdal::Dimension::Id::Z, i);
 
-			outfile << x << "" << y << "" << z << std::endl;
+			outfile << x << " " << y << " " << z << std::endl;
 		}
 	}
 
 	//close the file
 	outfile.close();
-	return true;
 
 }

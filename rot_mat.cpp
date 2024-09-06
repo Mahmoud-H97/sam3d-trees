@@ -5,7 +5,7 @@
 using Matrix3x3 = std::array<std::array<double, 3>, 3> ;
 
 //Rotation matrix around the x-axis
-Matrix3x3 Rx(double theta) {
+Matrix3x3 Rmx(double theta) {
 	Matrix3x3 rmx = {{
 		{1, 0, 0},
 		{0, std::cos(theta), -std::sin(theta)},
@@ -15,7 +15,7 @@ Matrix3x3 Rx(double theta) {
 }
 
 //Rotation matrix around the y-axis
-Matrix3x3 Ry(double theta) {
+Matrix3x3 Rmy(double theta) {
 	Matrix3x3 rmy = {{
 		{std::cos(theta), 0, std::sin(theta)},
 		{0, 1, 0},
@@ -25,7 +25,7 @@ Matrix3x3 Ry(double theta) {
 }
 
 //Rotation matrix around the z-axis
-Matrix3x3 Rz(double theta) {
+Matrix3x3 Rmz(double theta) {
 	Matrix3x3 rmz = {{
 		{std::cos(theta), -std::sin(theta), 0},
 		{std::sin(theta), std::cos(theta), 0},

@@ -8,14 +8,14 @@
 #include <fstream>
 #include <string>
 
-bool las2rgb(const std::string &input_filename){
+void las2rgb(const std::string &input_filename){
 	pdal::StageFactory factory;
 
 	//the reader stage 
 	pdal::Stage* reader = factory.createStage("readers.las");
 	if (!reader) {
 		std::cerr << "Failed to create LAS reader." << std::endl;
-		return false;
+		return;
 	}
 
 	//the inputfile
@@ -33,7 +33,7 @@ bool las2rgb(const std::string &input_filename){
 	std::ofstream outfile(output_filename);
 	if (!outfile.is_open()) {
 		std::cerr << "Failed to open output folder" << output_filename << std::endl;
-		return false;
+		return;
 	}
 
 	//loop over points & write
@@ -50,6 +50,5 @@ bool las2rgb(const std::string &input_filename){
 
 	//close the file
 	outfile.close();
-	return true;
 
 }

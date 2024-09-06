@@ -3,6 +3,6 @@
 
 #include <string>
 
-bool las2rgb(const std::string& input_filename);
+void las2rgb(const std::string& input_filename);
 
 #endif
