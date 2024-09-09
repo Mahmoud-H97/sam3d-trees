@@ -10,10 +10,18 @@
 
 using Point3D = std::array<double, 3> ;
 
+//Define a xyz point type
+//
+
+struct xyz { 
+	double x, y, z;
+};
+
+
 //Function
 //
 
-std::vector<Point3D> ApplyRotation(const std::vector<Point3D>& points, const Matrix3x3& Rmx, const Matrix3x3& Rmy, const Point3D& camera_pos);
-std::pair<int, int> CalcOutDims(const std::vector<Point3D>& rotated_points, double resolution);
+std::vector<xyz> ApplyRotation(const std::vector<xyz>& points, const Matrix3x3& Rmx, const Matrix3x3& Rmy, const std::vector<double>& camera_pos);
+std::pair<int, int> CalcOutDims(const std::vector<xyz>& rotated_points, double resolution);
 
 #endif

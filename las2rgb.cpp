@@ -40,11 +40,11 @@ void las2rgb(const std::string &input_filename){
 	//
 	for (auto& pointView : pointViewSet) {
 		for (pdal::PointId i = 0; i < pointView->size(); ++i) {
-			double r = pointView->getFieldAs<double>(pdal::Dimension::Id::Red, i);
-			double g = pointView->getFieldAs<double>(pdal::Dimension::Id::Green, i);
-			double b = pointView->getFieldAs<double>(pdal::Dimension::Id::Blue, i);
+			int r = pointView->getFieldAs<double>(pdal::Dimension::Id::Red, i);
+			int g = pointView->getFieldAs<double>(pdal::Dimension::Id::Green, i);
+			int b = pointView->getFieldAs<double>(pdal::Dimension::Id::Blue, i);
 
-			outfile << r << "" << g << "" << b << std::endl;
+			outfile << r << " " << g << " " << b << std::endl;
 		}
 	}
 

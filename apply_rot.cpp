@@ -2,14 +2,15 @@
 //
 #include "apply_rot.hpp"
 #include <algorithm>
+#include <vector>
 
-std::vector<Point3D> ApplyRotation(const std::vector<Point3D> &points, const Matrix3x3 &Rmx, const Matrix3x3 &Rmy, const Point3D &camera_pos){
+std::vector<xyz> ApplyRotation(const std::vector<xyz> &points, const Matrix3x3 &Rmx, const Matrix3x3 &Rmy, const std::vector<double> &camera_pos){
 
-	std::vector<Point3D> rotated_points;
+	std::vector<xyz> rotated_points;
 
 	for (const auto& point : points) {
 
-		Point3D translated_points = {point[0] - camera_pos[0], point[1] - camera_pos[1], point[2] - camera_pos[2]};
+		Point3D translated_points = {point.x - camera_pos[0], point.y - camera_pos[1], point.z - camera_pos[2]};
 
 		Point3D Rx;
 		for (int i = 0; i<3; i++) {
@@ -32,6 +33,7 @@ std::vector<Point3D> ApplyRotation(const std::vector<Point3D> &points, const Mat
 	}
 
 	return rotated_points;
+
 
 }
 
