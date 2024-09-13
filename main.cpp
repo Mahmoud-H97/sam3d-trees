@@ -4,12 +4,15 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <strstream>
 #include <utility>
 #include <vector>
+#include "create_image.hpp"
 #include "rot_mat.hpp"
 #include "apply_rot.hpp"
 #include "las2xyz.hpp"
 #include "las2rgb.hpp"
+#include "rgb.hpp"
 
 // to be runned as ./main inputfilename.las res cam_pos angles coloring
 // for the coloring maybe start with focusing in Z, intensity and numberofreturns (in future think about Amp and infrared) 
@@ -33,6 +36,15 @@ std::vector<double> parse_cam_pos (const std::string& cam_pos_input){
 	sscanf(cam_pos_input.c_str(), "(%lf, %lf, %lf)" , &cam_pos[0], &cam_pos[1], &cam_pos[2]);
 	return cam_pos;
 }
+//Function to parse resolution input into a float  
+double parse_res (const std::string& res_input){
+	double res;
+	std::stringstream s;
+	s << res_input;
+	s >> res;
+	return res;
+}
+
 
 int main(int argc, char* argv[]) {
 
@@ -42,7 +54,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::string input_filename = argv[1];
-	//std::double resolution = argv[2];
+	double resolution = parse_res(argv[2]);
 	std::vector<double> cam_pos = parse_cam_pos(argv[3]);
 	std::vector<std::pair<double, double>> angles = parse_angels(argv[4]);
 	std::string coloring = argv[5];
@@ -74,25 +86,47 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	//create the rotation matrices based on the input angles
+
+	std::vector<rgb> colors;  //used a different points structure here to not mess the old one's logic (Point3D)...
+	rgb tempCol;
+	//Reading points from ASCII formated file
+	FILE* ColInFile = fopen("tmp.rgb", "r");
+	if (ColInFile) {
+		while (fscanf(inFile, "%d %d %d\n", &tempCol.r, &tempCol.g, &tempCol.b) == 3)
+		{
+			colors.push_back(tempCol);
+		}
+		fclose(ColInFile);
+
+	}
+	else {
+		std::cout << "Error in loading the .rgb file" << std::endl;
+		return 1;
+	}
+
+	//create the rotation matrices based on the input angles and apply rotation
 	double pi = 3.14159265359 ;
 
 	for (const auto& angle : angles) {
-		
+
 		double theta_x = angle.first * pi / 180;
 		double theta_y = angle.second * pi / 180;
-		
+
 		Matrix3x3 Rm_x = Rmx(theta_x);
 		Matrix3x3 Rm_y = Rmy(theta_y);
 
 		std::vector<xyz> rot_points = ApplyRotation(points, Rm_x, Rm_y, cam_pos);
 		//std::vector<xyz> rot_points = ApplyRotation(points, Rmx(theta_x), Rmy(theta_y), cam_pos);
-		std::cout << "completed rotation with angle: (" << angle.first << ", " << angle.second << ")" <<  std::endl;
-		}
 
-	//apply rotation to the points 
+		std::string output_filename = "output_" + std::to_string(angle.first) + "_" + std::to_string(angle.second) + ".tif";
+		//create image
+		IFPC(points, colors, resolution , output_filename);
+       }
+
+	std::cout << "completed rotation with all angle" <<  std::endl;
 	//
-	//create image 
+	
+	
 
 
 

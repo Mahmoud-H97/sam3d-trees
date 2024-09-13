@@ -5,18 +5,11 @@
 #include <utility>
 #include <vector>
 #include "rot_mat.hpp"
+#include "xyz.hpp"
 
 //Define a 3D point type 
 
 using Point3D = std::array<double, 3> ;
-
-//Define a xyz point type
-//
-
-struct xyz { 
-	double x, y, z;
-};
-
 
 //Function
 //
