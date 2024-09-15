@@ -1,6 +1,8 @@
 #include <cstddef>
 #include <opencv4/opencv2/opencv_modules.hpp>
-#include <opencv4/opencv2/opencv.hpp>
+//#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/core.hpp>
+#include <opencv4/opencv2/imgcodecs.hpp>
 #include <ostream>
 #include <iostream>
 #include <sys/types.h>

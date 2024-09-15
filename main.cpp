@@ -4,7 +4,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-#include <strstream>
+//#include <strstream>
 #include <utility>
 #include <vector>
 #include "create_image.hpp"
@@ -18,16 +18,28 @@
 // for the coloring maybe start with focusing in Z, intensity and numberofreturns (in future think about Amp and infrared) 
 
 //Functiion to parse a string like "{(60, 0), (-60,0), (0, 60), ...}" input from the argv[] into a vector of angle pairs 
-std::vector<std::pair<double, double>> parse_angels(const std::string& angle_input){
-	std::vector<std::pair<double, double>> angles;
-	std::stringstream ss(angle_input);
-	char discard; //to discard unnecessary characters
-	double angle1, angle2;
 
-	while (ss >> discard >> angle1 >> discard >> angle2 >> discard) {
-		angles.emplace_back(angle1, angle2);
-	}
-	return angles;
+std::vector<std::pair<double, double>> parse_angles(const std::string& angle_input) {
+    std::vector<std::pair<double, double>> angles;
+    std::stringstream ss(angle_input);
+    char discard; // To discard unnecessary characters
+    double angle1, angle2;
+
+    // Ignore the opening brace '{'
+    ss >> discard;
+
+    while (ss >> discard >> angle1 >> discard >> angle2 >> discard) {
+        // Push the parsed angles into the vector
+        angles.emplace_back(angle1, angle2);
+
+        // Check if there's a comma and discard it
+        ss >> discard;
+        if (discard == '}') {
+            break; // End of input
+        }
+    }
+
+    return angles;
 }
 
 //Function to parse camera positions input like "(x,y,z)" into a vector  
@@ -56,7 +68,7 @@ int main(int argc, char* argv[]) {
 	std::string input_filename = argv[1];
 	double resolution = parse_res(argv[2]);
 	std::vector<double> cam_pos = parse_cam_pos(argv[3]);
-	std::vector<std::pair<double, double>> angles = parse_angels(argv[4]);
+	std::vector<std::pair<double, double>> angles = parse_angles(argv[4]);
 	std::string coloring = argv[5];
 
 	//create the xyz and coloring ASCII formated files
@@ -107,6 +119,12 @@ int main(int argc, char* argv[]) {
 	//create the rotation matrices based on the input angles and apply rotation
 	double pi = 3.14159265359 ;
 
+	std::cout << "Number of angles: " << angles.size() << std::endl;
+	
+	std::cout << "Resolution will be: " << resolution << std::endl;
+
+//	std::cout << "1st angle's X:  " << std::to_string(angles[0].first) << "Y:  " << std::to_string(angles[0].second)  << std::endl; //TODO::segmentation fault in here!! 
+
 	for (const auto& angle : angles) {
 
 		double theta_x = angle.first * pi / 180;
@@ -115,13 +133,23 @@ int main(int argc, char* argv[]) {
 		Matrix3x3 Rm_x = Rmx(theta_x);
 		Matrix3x3 Rm_y = Rmy(theta_y);
 
+		//Just for tracking, remove later...
+		printMatrix(Rm_x);
+		printMatrix(Rm_y);
+
+
+
 		std::vector<xyz> rot_points = ApplyRotation(points, Rm_x, Rm_y, cam_pos);
 		//std::vector<xyz> rot_points = ApplyRotation(points, Rmx(theta_x), Rmy(theta_y), cam_pos);
 
-		std::string output_filename = "output_" + std::to_string(angle.first) + "_" + std::to_string(angle.second) + ".tif";
+		std::string output_filename = "output_" + std::to_string(angle.first) + "_" + std::to_string(angle.second) + ".jpeg";
+
+		std::cout << "For angle: " << std::to_string(angle.first) << ", " << std::to_string(angle.second)  << " the generated filename will be: " << output_filename << std::endl;
+
+
 		//create image
-		IFPC(points, colors, resolution , output_filename);
-       }
+		IFPC(rot_points, colors, resolution , output_filename);
+	}
 
 	std::cout << "completed rotation with all angle" <<  std::endl;
 	//
